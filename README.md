@@ -1,4 +1,4 @@
-# Terraform Beginner Bootcamp 2023
+## Terraform Beginner Bootcamp 2023
 
 **Semantic Versioning 2.0.0**
 **Summary**
@@ -375,4 +375,3 @@ fi
 source "$bash_profile"
 
 echo "Alias 'tf' has been added. You can now use 'tf' as an alias for 'terraform'."
-```
