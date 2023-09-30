@@ -11,25 +11,11 @@ terraform {
     }
   }
 
-resource "aws_s3_bucket" "website_bucket"{
-  bucket = var.bucket-name
-  
-  tags = {
-    UserUuid = var.user_uuid
+  cloud {
+    organization = "Tafadzwa"
+    workspaces {
+      name = "terra-house-1"
+    }
   }
-}
-}
 
-module "terrahouse_aws" {
-  source = "./modules/terrahouse_aws"
-  user_uuid = var.user_uuid
-  bucket_name = var.bucket_name
-}
-provider "random" {
-  # Configuration options for the random provider, if needed.
-}
-
-resource "random_string" "bucket_name" {
-  length  = 16
-  special = false
 }
