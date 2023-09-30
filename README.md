@@ -375,4 +375,3 @@ fi
 source "$bash_profile"
 
 echo "Alias 'tf' has been added. You can now use 'tf' as an alias for 'terraform'."
-```
