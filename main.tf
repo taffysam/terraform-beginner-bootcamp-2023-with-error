@@ -1,5 +1,5 @@
 resource "random_string" "bucket_name" {
-  length  = 16
+  length  = 25
   special = false
 }
 
