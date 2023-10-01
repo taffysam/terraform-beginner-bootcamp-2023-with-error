@@ -1,0 +1,5 @@
+user_uuid="87e8fc20-5f21-4b38-872b-ab8adfb49ed5"
+
+AWS_DEFAULT_REGION=Region
+AWS_SECRET_ACCESS_KEY=ExamplekeyFFF
+AWS_ACCESS_KEY_ID=ExampleKeyID
