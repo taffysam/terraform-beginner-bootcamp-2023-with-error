@@ -3,5 +3,8 @@ resource "random_string" "bucket_name" {
   special = false
 }
 
+resource "aws_s3_bucket" "example" {
+  bucket = random_string.bucket_name.result
+}
 
- 
+
