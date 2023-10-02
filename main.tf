@@ -14,7 +14,7 @@
 resource "aws_s3_bucket" "bootcamp" {
   bucket = "87e8fc20-5f21-4b38-872b-ab8adfb49ed5"
 
-  tags = {
-  Useruuid = var.user_uuid
-  }
+  #tags = {
+  #Useruuid = var.user_uuid
+  #}
 }
