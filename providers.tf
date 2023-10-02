@@ -1,12 +1,12 @@
 terraform {
 
-cloud {
-   organization = "Tafadzwa"
-
-    workspaces {
-      name = "terra-house-2"
-    }
-  }
+#cloud {
+#   organization = "Tafadzwa"
+#
+#    workspaces {
+#      name = "terra-house-2"
+#    }
+#  }
 
   required_providers {
    aws = {
