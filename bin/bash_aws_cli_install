@@ -1,0 +1,24 @@
+#!/bin/bash
+
+# Change directory to /workspace
+cd /workspace
+
+# Download the AWS CLI installer ZIP file
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+
+# Unzip the downloaded ZIP file
+unzip awscliv2.zip
+
+# Run the AWS CLI installer with sudo
+sudo ./aws/install
+
+# Change directory to $PROJECT_ROOT (if it's defined)
+cd "$PROJECT_ROOT"
+
+Save the above script into a file, e.g., install_aws_cli.sh, and make it executable by running the following command:
+
+bash
+
+chmod +x install_aws_cli.sh
+
+You can then execute the script using ./install_aws_cli.sh. Please make sure to set the $PROJECT_ROOT variable with the appropriate value before running the script if it's required for your specific use case.
