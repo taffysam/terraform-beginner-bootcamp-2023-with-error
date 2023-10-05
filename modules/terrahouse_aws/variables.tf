@@ -55,7 +55,7 @@ variable "error_file_path" {
   type        = string
 
   validation {
-    condition     = length(var.error_html_file_path) > 0
+    condition     = length(var.error_file_path) > 0
     error_message = "The specified index.html file path must not be empty."
   }
 }
