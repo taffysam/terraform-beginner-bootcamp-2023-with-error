@@ -6,6 +6,6 @@
  # value = random_string.bucket_name.result
   
 #}
-output "s3_website_endpoint" {
-value = module.terrahouse_aws.s3_website_endpoint  
-}
+#output "s3_website_endpoint" {
+#value = module.terrahouse_aws.s3_website_endpoint  
+#}
