@@ -15,9 +15,9 @@ resource "aws_s3_bucket" "bootcamp3" {
   #}
 #}
 
-resource "aws_s3_bucket" "bootcamp" {
-  bucket = "87e8fc20-5f21-4b38-872b-ab8adfb49ed5"
-}
+#resource "aws_s3_bucket" "bootcamp" {
+#  bucket = "87e8fc20-5f21-4b38-872b-ab8adfb49ed5"
+#}
 
 #resource "aws_s3_bucket" "bootcamp2" {
 #  bucket = "22e8fc20-5f21-4b38-872b-ab8adfb49ed5"
