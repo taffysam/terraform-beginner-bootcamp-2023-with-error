@@ -9,3 +9,23 @@ variable "user_uuid" {
 }
 
 }
+
+variable "index_html_file_path" {
+  description = "Path to the index.html file"
+  type        = string
+
+  validation {
+    condition     = can(fileexists(var.index_html_file_path))
+    error_message = "The specified index.html file path does not exist."
+  }
+}
+
+variable "error_html_file_path" {
+  description = "Path to the index.html file"
+  type        = string
+
+  validation {
+    condition     = can(fileexists(var.error_file_path))
+    error_message = "The specified index.html file path does not exist."
+  }
+}
