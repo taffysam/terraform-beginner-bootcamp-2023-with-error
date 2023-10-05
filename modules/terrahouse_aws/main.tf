@@ -42,7 +42,7 @@ resource "aws_s3_object" "object" {
   key    = "index.html"
   
   source = var.index_html_file_path
-    
+  
   #source = "${path.root}/public.index.html"
   
   #source = "c:/Sofwares/Terraform Projects/terraform-beginner-bootcamp-2023-1/modules/terrahouse_aws/public/index.html"
@@ -55,7 +55,12 @@ resource "aws_s3_object" "object" {
 
 }
 
-
+resource "aws_s3_object" "object" {
+  bucket = "87e8fc20-5f21-4b38-872b-ab8adfb49ed5"
+  key    = "error.html"
+  
+  source = var.error_file_path
+}
 
   #tags = {
   #Useruuid = var.user_uuid

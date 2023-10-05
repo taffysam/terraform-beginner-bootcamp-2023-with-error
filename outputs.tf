@@ -6,3 +6,7 @@
  # value = random_string.bucket_name.result
   
 #}
+
+output "error_html_file_path_output" {
+  value = validate.error_file_path
+}
