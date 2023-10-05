@@ -7,9 +7,9 @@ resource "random_string" "bucket_name" {
   special = false
 }
 
-#resource "aws_s3_bucket" "bootcamp3" {
+resource "aws_s3_bucket" "bootcamp3" {
 #  bucket = random_string.bucket_name.result
-
+}
 #  tags = {
 #  Useruuid = var.user_uuid
 #  }
@@ -41,13 +41,13 @@ resource "aws_s3_object" "object" {
   # etag = filemd5("path/to/file")
 }
 
-  index_document {
-    suffix = "index.html"
-  }
+ # index_document {
+ #   suffix = "index.html"
+ # }
 
-  error_document {
-    key = "error.html"
-  }
+ # error_document {
+ #   key = "error.html"
+ # }
 
 
 
