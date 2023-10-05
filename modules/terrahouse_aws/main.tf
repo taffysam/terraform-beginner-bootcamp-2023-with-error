@@ -8,7 +8,7 @@ resource "random_string" "bucket_name" {
 }
 
 resource "aws_s3_bucket" "bootcamp3" {
- bucket = random_string.bucket_name.result
+ bucket = "77e8fc20-5f21-4b38-872b-ab8adfb49ed5"
 }
   #tags = {
   #Useruuid = var.user_uuid
@@ -24,7 +24,7 @@ resource "aws_s3_bucket" "bootcamp" {
 #}
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_website_configuration
 resource "aws_s3_bucket_website_configuration" "website_configuration" {
-bucket = "web8fc20-5f21-4b38-872b-ab8adfb49ed5"
+bucket = "8fc20-5f21-4b38-872b-ab8adfb49ed5"
 
 index_document {
     suffix = "index.html"
@@ -53,13 +53,6 @@ resource "aws_s3_object" "object" {
   # etag = filemd5("path/to/file")
 
 
-}
-
-resource "aws_s3_object" "object" {
-  bucket = "87e8fc20-5f21-4b38-872b-ab8adfb49ed5"
-  key    = "error.html"
-  
-  source = var.error_file_path
 }
 
   #tags = {

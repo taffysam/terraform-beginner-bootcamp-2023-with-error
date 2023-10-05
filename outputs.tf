@@ -8,5 +8,5 @@
 #}
 
 output "error_html_file_path_output" {
-  value = validate.error_file_path
+  value = var.error_file_path
 }
