@@ -24,7 +24,7 @@ resource "aws_s3_bucket" "bootcamp3" {
 #}
 # https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_website_configuration
 resource "aws_s3_bucket_website_configuration" "website_configuration" {
-bucket = "8fc20-5f21-4b38-872b-ab8adfb49ed5"
+bucket = "87e8fc20-5f21-4b38-872b-ab8adfb49ed5"
 
 index_document {
     suffix = "index.html"
