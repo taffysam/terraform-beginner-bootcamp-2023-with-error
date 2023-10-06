@@ -44,6 +44,7 @@ variable "index_html_file_path" {
 resource "null_resource" "validate_file_path" {
   triggers = {
     index_html_file_path = var.index_html_file_path
+    error_html_file_path = var.index_html_file_path
   }
 
 
@@ -59,11 +60,6 @@ variable "error_html_file_path" {
   }
 }
 
-resource "null_resource" "validate_file_path" {
-  triggers = {
-    index_html_file_path = var.error_html_file_path
-  }
-}
 
 
 
