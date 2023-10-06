@@ -53,7 +53,6 @@ resource "aws_s3_object" "object" {
 resource "aws_s3_object" "object2" {
   bucket = "87e8fc20-5f21-4b38-872b-ab8adfb49ed5"
   key    = "error.html"
-  #source = "c:/Sofwares/Terraform Projects/terraform-beginner-bootcamp-2023-1/modules/terrahouse_aws/public/error.html"
   source = var.error_html_file_path
 }
   #tags = {
