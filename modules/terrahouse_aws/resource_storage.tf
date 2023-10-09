@@ -48,11 +48,11 @@ resource "aws_s3_object" "index_html" {
   bucket = "87e8fc20-5f21-4b38-872b-ab8adfb49ed5"
   key    = "index.html"
   source = var.index_html_file_path
+  content_type = "text/html"
+  # source = "${path.root}/public.index.html"
   
-  #source = "${path.root}/public.index.html"
-  
- # The filemd5() function is available in Terraform 0.11.12 and later
-  # For Terraform 0.11.11 and earlier, use the md5() function and the file() function:
+  #The filemd5() function is available in Terraform 0.11.12 and later
+   #For Terraform 0.11.11 and earlier, use the md5() function and the file() function:
   etag = file(var.index_html_file_path)
   # etag = filemd5("path/to/file")
 }
@@ -61,10 +61,12 @@ resource "aws_s3_object" "error_html" {
   bucket = "87e8fc20-5f21-4b38-872b-ab8adfb49ed5"
   key    = "error.html"
   source = var.error_html_file_path
+  content_type = "text/html"
+  etag = filemd5(var.error_html_file_path)
 }
   
 resource "aws_s3_bucket_policy" "bucket_policy" {
-  bucket = aws_s3_bucket.website_bucket.bucket_name
+  bucket = aws_s3_bucket.website_bucket.bucket  # Use 'bucket' instead of 'bucket_name'
   policy = jsonencode({
     "Version" = "2012-10-17",
     "Statement" = [
@@ -85,6 +87,4 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
   })
 }
 
-resource "aws_cloudfront_distribution" "website_distribution" {
-  
-}
+
