@@ -375,3 +375,15 @@ fi
 source "$bash_profile"
 
 echo "Alias 'tf' has been added. You can now use 'tf' as an alias for 'terraform'."
+
+
+
+## Terraform Locals
+
+Locals allow us to destry locl variables. It canbe very usefulwhen we need to transform data into another format and
+
+```tf
+locals {
+  s3_origin_id = "MyS3Origin"
+}
+```
