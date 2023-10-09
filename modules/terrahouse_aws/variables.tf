@@ -60,6 +60,12 @@ resource "null_resource" "validate_file_path" {
 
 }
 
+variable "bucket_name" {
+  type    = string
+  description = "Name of the S3 bucket for the static website"
+}
+
+
 
 
 

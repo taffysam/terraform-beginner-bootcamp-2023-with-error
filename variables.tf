@@ -57,8 +57,13 @@ resource "null_resource" "validate_file_path" {
     error_html_file_path = var.error_html_file_path
   }
 
-
 }
+
+variable "bucket_name" {
+  type    = string
+  description = "Name of the S3 bucket for the static website"
+}
+
 
 
 
