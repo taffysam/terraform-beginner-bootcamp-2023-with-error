@@ -17,14 +17,8 @@ resource "aws_s3_bucket" "website_bucket" {
 
 data "aws_caller_identity" "current" {}
 
-
-resource "aws_s3_bucket" "mylogs" {
- bucket = "mylogs"
-}
-
-
-#resource "aws_s3_bucket" "bootcamp" {
-#  bucket = "87e8fc20-5f21-4b38-872b-ab8adfb49ed5"
+#resource "aws_s3_bucket" "mylogs" {
+# bucket = "mylogs"
 #}
 
 #resource "aws_s3_bucket" "bootcamp2" {
@@ -66,17 +60,23 @@ resource "aws_s3_object" "error_html" {
   etag = filemd5(var.error_html_file_path)
 }
   resource "aws_s3_bucket_policy" "bucket_policy" {
-  bucket = aws_s3_bucket.website_bucket.bucket  # Use 'bucket' instead of 'bucket_name'
+  bucket = aws_s3_bucket.website_bucket.id  # Use 'id' instead of 'bucket' to reference the bucket resource
+
   policy = jsonencode({
     "Version": "2012-10-17",
     "Statement": [
       {
-        "Effect": "Allow",
+          "Effect": "Allow",
         "Action": [
-          "s3:GetBucketAcl",
-          "s3:PutBucketAcl"
+          "s3:ListBucket",
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:DeleteObject"
         ],
-        "Resource": "arn:aws:s3:::mylogs.s3.amazonaws.com"  # Replace with your CloudFront logs S3 bucket ARN
+        "Resource": [
+          "arn:aws:s3:::87e8fc20-5f21-4b38-872b-ab8adfb49ed5.s3.amazonaws.com",  
+          "arn:aws:s3:::87e8fc20-5f21-4b38-872b-ab8adfb49ed5.s3.amazonaws.com/*"  
+        ]
       },
       {
         "Effect": "Allow",
@@ -87,13 +87,10 @@ resource "aws_s3_object" "error_html" {
           "s3:DeleteObject"
         ],
         "Resource": [
-          "arn:aws:s3:::mylogs.s3.amazonaws.com",  # Replace with your CloudFront logs S3 bucket ARN
-          "arn:aws:s3:::mylogs.s3.amazonaws.com/*"  # Replace with your CloudFront logs S3 bucket ARN
+          "arn:aws:s3:::mylogs.s3.amazonaws.com",  
+          "arn:aws:s3:::mylogs.s3.amazonaws.com/*"  
         ]
       }
     ]
   })
 }
-
-
-
