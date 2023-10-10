@@ -71,3 +71,36 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     cloudfront_default_certificate = true
   }
 }
+
+
+resource "aws_s3_bucket_policy" "bucket_policy" {
+  bucket = aws_s3_bucket.website_bucket.id  # Use 'id' instead of 'bucket' to reference the bucket resource
+
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Effect": "Allow",
+        "Principal": "*",
+        "Action": "s3:GetObject",
+        "Resource": [
+          "arn:aws:s3:::87e8fc20-5f21-4b38-872b-ab8adfb49ed5"
+        ]
+      },
+      {
+        "Effect": "Allow",
+        "Principal": "*",
+        "Action": [
+          "s3:GetObject",
+          "s3:ListBucket"
+        ],
+        "Resource": [
+          "arn:aws:s3:::mylogs.s3.amazonaws.com",
+          "arn:aws:s3:::mylogs.s3.amazonaws.com/*"
+        ]
+      }
+    ]
+  })
+}
+
+
