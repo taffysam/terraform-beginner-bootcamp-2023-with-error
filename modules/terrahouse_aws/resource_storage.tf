@@ -48,6 +48,10 @@ resource "aws_s3_object" "index_html" {
    #For Terraform 0.11.11 and earlier, use the md5() function and the file() function:
   etag = file(var.index_html_file_path)
   # etag = filemd5("path/to/file")
+lifecycle {
+   ignore_changes = [ etag ] 
+ }
+
 }
 
 resource "aws_s3_object" "error_html" {
@@ -56,4 +60,8 @@ resource "aws_s3_object" "error_html" {
   source = var.error_html_file_path
   content_type = "text/html"
   etag = filemd5(var.error_html_file_path)
+  lifecycle {
+   ignore_changes = [ etag ] 
+ }
+
 }

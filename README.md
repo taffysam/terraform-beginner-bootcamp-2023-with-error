@@ -387,3 +387,12 @@ locals {
   s3_origin_id = "MyS3Origin"
 }
 ```
+
+
+
+
+
+
+
+## Terraform Life Cycle
+[Terraform Lifecyle](https://developer.hashicorp.com/terraform/tutorials/state/resource-lifecycle)

@@ -65,6 +65,15 @@ variable "bucket_name" {
   description = "Name of the S3 bucket for the static website"
 }
 
+variable "content_version" {
+  type        = number
+  description = "Positive content version starting from 1"
+  validation {
+    condition     = var.content_version >= 1
+    error_message = "content_version must be a positive value starting from 1"
+  }
+  default     = 1
+}
 
 
 

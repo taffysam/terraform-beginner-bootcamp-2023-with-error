@@ -65,6 +65,11 @@ variable "bucket_name" {
 }
 
 
+variable "content_version" {
+  type        = number
+  description = "Positive content version starting from 1"
+  
+}
 
 
 
