@@ -1,6 +1,11 @@
 terraform {
 
 }
+
+provider "aws" {
+  region = "af-south-1"
+}
+
 module "terrahouse_aws" {
   source = "./modules/terrahouse_aws"
   user_uuid = var.user_uuid

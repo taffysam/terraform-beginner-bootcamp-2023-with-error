@@ -27,9 +27,8 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
   logging_config {
     include_cookies = false
-    bucket          = "mylogs.s3.amazonaws.com"
-    prefix          = "myprefix"
-  }
+    bucket          = "tafadzwa-bootcamp-terraform2023"  
+     }
 
   # Define any aliases (custom domain names) if needed
 
@@ -72,35 +71,31 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   }
 }
 
-
 resource "aws_s3_bucket_policy" "bucket_policy" {
   bucket = aws_s3_bucket.website_bucket.id  # Use 'id' instead of 'bucket' to reference the bucket resource
 
   policy = jsonencode({
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Effect": "Allow",
-        "Principal": "*",
-        "Action": "s3:GetObject",
-        "Resource": [
-          "arn:aws:s3:::87e8fc20-5f21-4b38-872b-ab8adfb49ed5"
-        ]
-      },
-      {
-        "Effect": "Allow",
-        "Principal": "*",
-        "Action": [
-          "s3:GetObject",
-          "s3:ListBucket"
-        ],
-        "Resource": [
-          "arn:aws:s3:::mylogs.s3.amazonaws.com",
-          "arn:aws:s3:::mylogs.s3.amazonaws.com/*"
-        ]
-      }
-    ]
-  })
+    "Version" = "2012-10-17",
+    "Statement" = {
+        "Sid" = "AllowCloudFrontServicePrincipalReadOnly",
+        "Effect" = "Allow",
+        "Principal" = {
+         "Service" = "cloudfront.amazonaws.com"
+            },
+        "Action" = [
+                    "s3:GetObject",
+                    "s3:GetBucketAcl",
+                    "s3:PutBucketAcl"
+                  ]
+        "Resource" = "arn:aws:s3:::${aws_s3_bucket.website_bucket.id}/*",
+        "Condition" = {
+        "StringEquals" = {
+          "AWS:SourceArn" = "arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:distribution/${aws_cloudfront_distribution.s3_distribution.id}"
+        }
+            }
+        },
+        
+    })
 }
 
 
