@@ -4,9 +4,11 @@ resource "random_string" "bucket_name" {
   special = false
 }
 
-resource "aws_s3_bucket" "bootcamp3" {
- bucket = "77e8fc20-5f21-4b38-872b-ab8adfb49ed5"
+resource "aws_s3_bucket" "tafadzwacloudfront-log-terraform2023" {
+  bucket = "tafadzwacloudfront-log-terraform2023"
+ 
 }
+
 
 resource "aws_s3_bucket" "website_bucket" {
   bucket = var.bucket_name
