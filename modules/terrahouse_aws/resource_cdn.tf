@@ -25,10 +25,11 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   comment             = "Static Website hosting for: ${var.bucket_name}"
   default_root_object = "index.html"
 
-  logging_config {
-    include_cookies = false
-    bucket          = "tafadzwa-bootcamp-terraform2023"  
-     }
+  #logging_config {
+  #  include_cookies = false
+  #  bucket          = "tafadzwacloudfront-log-terraform2023"
+    #bucket =  "${aws_s3_bucket.tafadzwacloudfront-log-terraform2023.id}.s3.amazonaws.com"
+   #      }
 
   # Define any aliases (custom domain names) if needed
 
@@ -76,26 +77,27 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
 
   policy = jsonencode({
     "Version" = "2012-10-17",
-    "Statement" = {
-        "Sid" = "AllowCloudFrontServicePrincipalReadOnly",
-        "Effect" = "Allow",
-        "Principal" = {
-         "Service" = "cloudfront.amazonaws.com"
+    "Statement" = [
+        {
+            "Sid" = "AllowCloudFrontServicePrincipalReadOnly",
+            "Effect" = "Allow",
+            "Principal" = {
+                "Service" = "cloudfront.amazonaws.com"
             },
-        "Action" = [
-                    "s3:GetObject",
-                    "s3:GetBucketAcl",
-                    "s3:PutBucketAcl"
-                  ]
-        "Resource" = "arn:aws:s3:::${aws_s3_bucket.website_bucket.id}/*",
-        "Condition" = {
-        "StringEquals" = {
-          "AWS:SourceArn" = "arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:distribution/${aws_cloudfront_distribution.s3_distribution.id}"
-        }
+            "Action" = [
+                "s3:GetObject",
+                "s3:GetBucketAcl"
+            ],
+            "Resource" = [
+                "arn:aws:s3:::${aws_s3_bucket.website_bucket.id}/*",
+                "arn:aws:s3:::${aws_s3_bucket.website_bucket.id}"
+            ],
+            "Condition" = {
+                "StringEquals" = {
+                    "aws:SourceArn" = "arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:distribution/${aws_cloudfront_distribution.s3_distribution.id}"
+                }
             }
-        },
-        
-    })
+        }
+    ]
+  })
 }
-
-
