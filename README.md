@@ -580,3 +580,33 @@ hello
 world
 EOT
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Security on Terraform
+### Managing Secrets
+
+### Key files to be protected
+- State File
+- Terraform Variable files
+- Terraform Providers
+- Terraform instances
+
+`Declare variables and sensetive variables locally`
+`Access to Sensetive Data on Terraform can be managed by Specific Users`
+`Can be Cloud native`
+- Aws Secret Manager
+- Azure Key Vault
+- Harshicorp Vault
+
+Variables can be Terraform or Environmental
