@@ -378,6 +378,116 @@ echo "Alias 'tf' has been added. You can now use 'tf' as an alias for 'terraform
 
 
 
+## Fix missing Resources with terraform import
+
+If someone goes and delete or modifies cloud resources manually through clickOps. If we run the terraform plan again it will attempt to put
+infrastructure back into original state. 
+
+If you loose you state you have to tear down all infrastructure manually, you will need to run terraform import. 
+
+
+
+[Terraform Import](https://developer.hashicorp.com/terraform/language/import)
+
+
+## Passing Input Variables
+- We can pass input variable to out modul.
+
+## Module source
+Using the source we can import module from various places ge:
+- locally
+- GitHub
+- Terraform Registry
+
+```terraform
+module "terrahouse_aws" {
+  source = "./modules/terrahouse_aws"
+  user_uuid = var.user_uuid
+  bucket_name = var.bucket_name
+}
+
+
+```
+
+
+## Terraform Import
+
+
+
+
+## Considerations when using ChatGPT to write terraform
+ChatGPT may not be trained on the latest version of terraform. Providers to change from time to time 
+
+
+[Referencing Files](https://developer.hashicorp.com/terraform/language/expressions/references)
+
+ 
+[Module Sources](https://developer.hashicorp.com/terraform/language/modules/sources) 
+
+In terraform there is a special varaible called `path` for the variable path that allows us to reference local path.
+
+## The following values are available:
+
+    - path.module is the filesystem path of the module where the expression is placed. We do not recommend using path.module 
+	in write operations because it can produce different behavior depending on whether you use remote or local module sources. 
+	Multiple invocations of local modules use the same source directory, overwriting the data in path.module during each call. 
+	This can lead to race conditions and unexpected results.
+    - path.root is the filesystem path of the root module of the configuration.
+    - path.cwd is the filesystem path of the original working directory from where you ran Terraform before applying any -chdir argument. 
+	This path is an absolute path that includes details about the filesystem structure. It is also useful in some advanced cases where 
+	Terraform is run from a directory other than the root module directory. We recommend using path.root or path.module over path.cwd where possible.
+    - terraform.workspace is the name of the currently selected workspace.
+
+
+## The main kinds of named values available in Terraform are:
+
+    - Resources
+    - Input variables
+    - Local values
+    - Child module outputs
+    - Data sources
+    - Filesystem and workspace info
+    - Block-local values
+
+
+
+# https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_object
+resource "aws_s3_object" "object" {
+  bucket = "87e8fc20-5f21-4b38-872b-ab8adfb49ed5"
+  key    = "index.html"
+  
+  source = var.index_html_file_path
+    
+  source = "${path.root}/public.index.html"
+  
+  source = "c:/Sofwares/Terraform Projects/terraform-beginner-bootcamp-2023-1/modules/terrahouse_aws/public/index.html"
+
+    # The filemd5() function is available in Terraform 0.11.12 and later
+  # For Terraform 0.11.11 and earlier, use the md5() function and the file() function:
+  # etag = "${md5(file("path/to/file"))}"
+  # etag = filemd5("path/to/file")
+
+
+
+  ${path.root}/public/index.html
+  
+ etag = filemd5("${path.root}/public/index.html)
+ 
+ 
+  soource= var.index.html.file_path
+
+}
+
+
+## Terraform Data Sources
+
+[Data Source](https://developer.hashicorp.com/terraform/language/data-sources)
+
+
+[AWS Data caller ID](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity)
+
+
+
 ## Terraform Locals
 
 Locals allow us to destry locl variables. It canbe very usefulwhen we need to transform data into another format and
@@ -387,3 +497,64 @@ locals {
   s3_origin_id = "MyS3Origin"
 }
 ```
+
+
+## Invalidating Cloud Front 
+
+Use the below code
+
+resource "aws_lambda_function" "cloudfront_invalidation" {
+  filename         = "cloudfront_invalidation.zip"
+  source_code_hash = filebase64sha256("cloudfront_invalidation.zip")
+  role             = aws_iam_role.lambda_exec.arn
+
+  handler = "index.handler"
+  runtime = "nodejs14.x"
+}
+
+data "aws_iam_policy_document" "lambda" {
+  source_json = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Action = "cloudfront:CreateInvalidation",
+        Effect = "Allow",
+        Resource = aws_cloudfront_distribution.my_distribution.arn,
+      },
+    ],
+  })
+}
+
+resource "aws_iam_role" "lambda_exec" {
+  name = "lambda_exec_role"
+}
+
+resource "aws_iam_policy" "lambda" {
+  name        = "lambda_policy"
+  description = "Policy for CloudFront Invalidation Lambda"
+  policy      = data.aws_iam_policy_document.lambda.json
+}
+
+resource "aws_iam_role_policy_attachment" "lambda" {
+  policy_arn = aws_iam_policy.lambda.arn
+  role       = aws_iam_role.lambda_exec.name
+}
+
+resource "aws_lambda_permission" "cloudfront_invalidation" {
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.cloudfront_invalidation.arn
+  principal     = "cloudfront.amazonaws.com"
+  source_arn    = aws_cloudfront_distribution.my_distribution.arn
+}
+
+resource "null_resource" "invalidate" {
+  triggers = {
+    function_version = aws_lambda_function.cloudfront_invalidation.qualified_arn
+  }
+
+  provisioner "local-exec" {
+    command = "aws lambda update-function-code --function-name ${aws_lambda_function.cloudfront_invalidation.function_name} --zip-file fileb://${path.module}/cloudfront_invalidation.zip"
+  }
+}
+
+
