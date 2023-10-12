@@ -499,6 +499,18 @@ locals {
 ```
 
 
+## Provisioners
+- Allow you to execute local commnands on compute instances eg and AWS CLI Command
+- Not reccommended by Harshicorp instead use Ansible with better functionality
+
+### Local-execs
+- This will execute commands on the commands running on machine on which you target. You will need to provide credentials such as ssh to
+get into the machine.
+
+
+### Remote-execs
+
+
 ## Invalidating Cloud Front 
 
 Use the below code
