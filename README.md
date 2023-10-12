@@ -558,3 +558,13 @@ resource "null_resource" "invalidate" {
 }
 
 
+## Heredocs
+[Heredocs](https://developer.hashicorp.com/terraform/language/expressions/strings)
+
+Can be used when doing multi-line commands
+`Syntax`
+<<EOT
+hello
+world
+EOT
+
