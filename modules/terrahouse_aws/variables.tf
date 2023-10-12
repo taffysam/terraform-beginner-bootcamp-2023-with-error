@@ -66,6 +66,15 @@ variable "bucket_name" {
 }
 
 
+variable "context_version" {
+  type        = number
+  description = "The context version (positive integer starting at 1)"
+  
+  validation {
+    condition = var.context_version > 0 && can(var.context_version, "integer")
+    error_message = "context_version must be a positive integer starting at 1"
+  }
+}
 
 
 
