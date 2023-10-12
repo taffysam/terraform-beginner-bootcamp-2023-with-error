@@ -103,13 +103,13 @@ resource "aws_s3_bucket_policy" "bucket_policy" {
 }
 
 resource "terraform_data" "invalidate_cache"{
-  triggers_replace = terraform_data = content_version.output
+  triggers_replace = terraform_data.content_version.output 
 
   provisioner "local-exec" {
     # https://developer.hashicorp.com/terraform/language/expressions/strings
     command = <<-EOT
       aws cloudfront create-invalidation \
-        --distribution-id ${aws_cloudfront_distribution.my_distribution.id} \
+        --distribution-id ${aws_cloudfront_distribution.s3_distribution.id} \
         --paths "/*"
     EOT
   }
@@ -117,4 +117,3 @@ resource "terraform_data" "invalidate_cache"{
 }
 
 
-}

@@ -13,6 +13,7 @@ module "terrahouse_aws" {
 # validate_file_path.index_html_file_path = index_html_file_path
   index_html_file_path = var.index_html_file_path
   error_html_file_path = var.error_html_file_path
+  context_version  = 1
  
   
 }

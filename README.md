@@ -499,6 +499,57 @@ locals {
 ```
 
 
+## Provisioners
+[Provisioners](https://developer.hashicorp.com/terraform/language/resources/provisioners/file)
+- Allow you to execute local commnands on compute instances eg and AWS CLI Command
+- Not reccommended by Harshicorp instead use Ansible with better functionality
+
+### Local-execs
+- This will execute commands on the commands running on machine on which you target. You will need to provide credentials such as ssh to
+get into the machine.
+
+
+### Remote-execs
+
+
+### File Provisioners
+
+-The file provisioner copies files or directories from the machine running Terraform to the newly created resource. The file provisioner supports both ssh and winrm type
+
+`Example`
+
+```tf
+resource "aws_instance" "web" {
+  # ...
+
+  # Copies the myapp.conf file to /etc/myapp.conf
+  provisioner "file" {
+    source      = "conf/myapp.conf"
+    destination = "/etc/myapp.conf"
+  }
+
+  # Copies the string in content into /tmp/file.log
+  provisioner "file" {
+    content     = "ami used: ${self.ami}"
+    destination = "/tmp/file.log"
+  }
+
+  # Copies the configs.d folder to /etc/configs.d
+  provisioner "file" {
+    source      = "conf/configs.d"
+    destination = "/etc"
+  }
+
+  # Copies all files and folders in apps/app1 to D:/IIS/webapp1
+  provisioner "file" {
+    source      = "apps/app1/"
+    destination = "D:/IIS/webapp1"
+  }
+}
+
+
+```
+
 ## Invalidating Cloud Front 
 
 Use the below code
@@ -568,3 +619,34 @@ hello
 world
 EOT
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Security on Terraform
+### Managing Secrets
+
+### Key files to be protected
+- State File
+- Terraform Variable files
+- Terraform Providers
+- Terraform instances
+
+`Declare variables and sensetive variables locally`
+`Access to Sensetive Data on Terraform can be managed by Specific Users`
+`Can be Cloud native`
+- Aws Secret Manager
+- Azure Key Vault
+- Harshicorp Vault
+- Encryption 
+
+Variables can be Terraform or Environmental

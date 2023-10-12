@@ -65,19 +65,13 @@ variable "bucket_name" {
   description = "Name of the S3 bucket for the static website"
 }
 
-
 variable "context_version" {
   type        = number
   description = "The context version (positive integer starting at 1)"
   
   validation {
-    condition = var.context_version > 0 && can(var.context_version, "integer")
+    condition     = var.context_version > 0 && floor(var.context_version) == var.context_version
     error_message = "context_version must be a positive integer starting at 1"
   }
 }
-
-
-
-
-
 
