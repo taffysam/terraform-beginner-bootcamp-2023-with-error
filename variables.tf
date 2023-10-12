@@ -65,6 +65,11 @@ variable "bucket_name" {
 }
 
 
+variable "context_version" {
+  type        = number
+  description = "The context version (positive integer starting at 1)"
+ 
+}
 
 
 
