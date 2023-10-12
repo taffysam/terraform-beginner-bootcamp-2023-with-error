@@ -15,15 +15,15 @@ output "index_html_file_path_output" {
   value = var.index_html_file_path
 }
 
+
 #output "s3_website_endpoint" {
-#  value = aws_s3_bucket.my_bucket.website_endpoint
-#}
-#
-#output "s3_website_endpoint" {
-#  value = "http://${aws_s3_bucket.bucket.website_endpoint}"
+#  value = module.terrahouse_aws.cloudfront_url
 #}
 
 #output "cloudfront_url" {
-#  value = aws_cloudfront_distribution.website_bucket.domain_name
+#  value = aws_cloudfront_distribution
 #}
 
+#output "s3_website_endpoint" {
+#  value = module.terrahouse_aws.website_endpoint
+#}

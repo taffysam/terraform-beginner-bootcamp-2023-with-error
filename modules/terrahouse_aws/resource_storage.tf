@@ -9,7 +9,6 @@ resource "aws_s3_bucket" "tafadzwacloudfront-log-terraform2023" {
  
 }
 
-
 resource "aws_s3_bucket" "website_bucket" {
   bucket = var.bucket_name
   tags = {
@@ -57,3 +56,9 @@ resource "aws_s3_object" "error_html" {
   content_type = "text/html"
   etag = filemd5(var.error_html_file_path)
 }
+
+resource "terraform_data" "content_version" {
+    
+  }
+
+ 
