@@ -57,6 +57,15 @@ resource "aws_s3_object" "error_html" {
   etag = filemd5(var.error_html_file_path)
 }
 
+resource "aws_s3_object" "upload_assets" {
+  for_each = fileset("${path.root}/public/assets", "*.{jpg,png,git}") 
+  bucket = "87e8fc20-5f21-4b38-872b-ab8adfb49ed5"
+  key    = "assets/${each.key}"
+  source = "${path.root}/public/assets/${each.key}"
+  etag   = filemd5("${path.root}/public/assets/${each.key}")
+}
+
+
 resource "terraform_data" "content_version" {
     
   }

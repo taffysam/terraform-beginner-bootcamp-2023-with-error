@@ -650,3 +650,68 @@ EOT
 - Encryption 
 
 Variables can be Terraform or Environmental
+
+
+
+## For Each
+
+ - We use the for_each attribute to loop through each file in the local.asset_files list.
+ - The bucket attribute references the S3 bucket you created.
+ - The key attribute is the name of the object in the S3 bucket, which is the same as the filename.
+ - The source attribute is the local file path to upload.
+ - The acl attribute sets the object's access control list to "private." You can change it to your desired ACL.
+ 
+ ### Sample Code
+ 
+ ```tf
+ resource "aws_s3_bucket" "example" {
+  bucket = "your-s3-bucket-name"
+  acl    = "private"
+}
+
+ 
+ ```
+ 
+ 
+ 
+ ```tf
+ variable "assets_folder_path" {
+  description = "Path to the 'assets' folder"
+  default     = "./assets"
+}
+
+locals {
+  asset_files = fileset(var.assets_folder_path, "**/*")
+}
+ 
+ 
+ ```
+ 
+ 
+ 
+ ```tf
+ 
+ resource "aws_s3_bucket_object" "asset_objects" {
+  for_each = { for file in local.asset_files : file => file }
+
+  bucket = aws_s3_bucket.example.id
+  key    = each.value
+  source = "${var.assets_folder_path}/${each.value}"
+  acl    = "private"
+}
+
+ 
+ ```
+ 
+ 
+ ## Collection types
+ 
+ List:
+ 
+ 
+ Map:
+ 
+ 
+ Set:
+ 
+ 
