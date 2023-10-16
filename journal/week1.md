@@ -1,29 +1,4 @@
 
-cloud {
-    organization = "Tafadzwa"
-    workspaces {
-      name = "terra-house-1"
-    }
-  }
-  
-  
-  
-  variable "user_uuid" {
-  description = "User UUID"
-  type        = string
-
-  validation {
-    condition     = length(var.user_uuid) == 36
-    error_message = "User UUID must be 36 characters long"
-  }
-
-  validation {
-    condition     = can(regex("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", var.user_uuid))
-    error_message = "User UUID must be in the format of a UUID (e.g., 123e4567-e89b-12d3-a456-426655440000)"
-  }
-}
-
-
 # Terraform Bootcamp Week1 Update
 
 ## The Terraform File structure is made up of the following:
@@ -69,4 +44,35 @@ document which terraform variables take precedence
 
 
 
-'
+```tf 
+cloud {
+    organization = "Tafadzwa"
+    workspaces {
+      name = "terra-house-1"
+    }
+  }
+  
+```  
+
+ ```tf
+
+  variable "user_uuid" {
+  description = "User UUID"
+  type        = string
+
+```
+
+```tf
+
+  validation {
+    condition     = length(var.user_uuid) == 36
+    error_message = "User UUID must be 36 characters long"
+  }
+
+  validation {
+    condition     = can(regex("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", var.user_uuid))
+    error_message = "User UUID must be in the format of a UUID (e.g., 123e4567-e89b-12d3-a456-426655440000)"
+  }
+}
+
+```
