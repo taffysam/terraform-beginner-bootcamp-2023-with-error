@@ -110,7 +110,6 @@ class TerraTownsMockServer < Sinatra::Base
       name: name,
       town: town,
       description: description,
-      domain_name: domain_name,
       content_version: content_version
     }
 
@@ -148,7 +147,6 @@ class TerraTownsMockServer < Sinatra::Base
     # Validate payload data
     name = payload["name"]
     description = payload["description"]
-    domain_name = payload["domain_name"]
     content_version = payload["content_version"]
 
     unless params[:uuid] == $home[:uuid]
@@ -159,8 +157,9 @@ class TerraTownsMockServer < Sinatra::Base
     home.town = $home[:town]
     home.name = name
     home.description = description
-    home.domain_name = domain_name
+    home.domain_name = $home[:domain_name]
     home.content_version = content_version
+    binding.pry
 
     unless home.valid?
       error 422, home.errors.messages.to_json
@@ -170,7 +169,8 @@ class TerraTownsMockServer < Sinatra::Base
   end
 
   # DELETE
-  delete '/api/u/:user_uuid/homes/:uuid' do
+
+    delete '/api/u/:user_uuid/homes/:uuid' do
     ensure_correct_headings
     find_user_by_bearer_token
     puts "# delete - DELETE /api/homes/:uuid"
@@ -181,7 +181,8 @@ class TerraTownsMockServer < Sinatra::Base
     end
 
     $home = {}
-    { message: "House deleted successfully" }.to_json
+  uuid = $home['uuid']
+    { uuid: uuid }.to_json
   end
 end
 
