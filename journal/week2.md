@@ -55,3 +55,12 @@ bundle install
 ```
 
 All the code for our server is stored in the `server.rb` file.
+
+
+## Go Commands
+
+1. go get github.com/hashicorp/terraform-plugin-sdk/v2/plugin
+2. go get github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema
+3. go mod tidy
+4. go build -o terraform-provider-terratowns_v1.0.0
+
