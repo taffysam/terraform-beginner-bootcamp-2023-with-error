@@ -1,5 +1,7 @@
 tasks:
   - name: terraform
+    env: 
+       FT_LOG: DEBUG
     before: |
       source ./bin/set_tf_alias
       source ./bin/install_terrafrom_cli

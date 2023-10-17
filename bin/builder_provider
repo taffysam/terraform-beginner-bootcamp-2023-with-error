@@ -1,0 +1,27 @@
+#!/bin/bash
+
+# Define variables
+PROJECT_ROOT="/workspace/terraform-beginner-bootcamp-2023"
+PLUGIN_DIR="/home/gitpod/.terraform.d/plugins/local.provider/local/terratowns/1.0.0/"
+PLUGIN_NAME="terraform-provider-terratowns_v1.0.0"
+
+# Change directory to your project
+cd "$PROJECT_ROOT/terraform-providers-terratowns"
+
+# Copy your custom terraformrc file
+cp "$PROJECT_ROOT/terraformrc" "/home/gitpod/.terraformrc"
+
+# Clean up previously installed plugins and cache
+rm -rf "/home/gitpod/.terraform.d/plugins"
+rm -rf "/home/gitpod/.terraform"
+
+# Build your custom Terraform provider
+go build -o "$PLUGIN_NAME"
+
+# Create the plugin directory structure
+mkdir -p "$PLUGIN_DIR/x86_64"
+mkdir -p "$PLUGIN_DIR/1.0.0/linux_amd64"
+
+# Copy the compiled Terraform provider binary to the plugin directory
+cp "$PLUGIN_NAME" "$PLUGIN_DIR/x86_64"
+cp "$PLUGIN_NAME" "$PLUGIN_DIR/1.0.0/linux_amd64"
