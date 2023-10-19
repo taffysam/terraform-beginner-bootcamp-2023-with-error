@@ -3,6 +3,7 @@ tasks:
     env: 
        FT_LOG: DEBUG
     before: |
+      cd $PROJECT_ROOT
       source ./bin/set_tf_alias
       source ./bin/install_terrafrom_cli
       source ./bin/generate_trfc_credentials
@@ -20,10 +21,10 @@ tasks:
       AWS_CLI_AUTO_PROMPT: on-partial
     init: |
       cd /workspace
-      curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-      unzip awscliv2.zip
-      sudo ./aws/install
-      cd $THEIA_WORKSPACE_ROOT
+       curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+       unzip awscliv2.zip
+       sudo ./aws/install
+       
 
   - name: http-server
     before: |
