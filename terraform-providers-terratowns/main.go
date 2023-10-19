@@ -13,26 +13,25 @@ func main() {
 	plugin.Serve(&plugin.ServeOpts{
 		ProviderFunc: Provider,
 	})
-<<<<<<< HEAD
+
 }
 
 type Config struct {
 	Endpoint string
 	UserUUID string
 	Token    string
-=======
->>>>>>> main
+
 }
 
 func Provider() *schema.Provider {
 	return &schema.Provider{
-<<<<<<< HEAD
+
 		ResourcesMap: map[string]*schema.Resource{
 			"terratowns_home": Resource(),
 		},
-=======
+
 		ResourcesMap:   map[string]*schema.Resource{},
->>>>>>> main
+
 		DataSourcesMap: map[string]*schema.Resource{},
 		Schema: map[string]*schema.Schema{
 			"endpoint": {
@@ -58,7 +57,7 @@ func Provider() *schema.Provider {
 
 func providerConfigure(p *schema.Provider) schema.ConfigureContextFunc {
 	return func(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics) {
-<<<<<<< HEAD
+
 		log.Print("providerConfigure:start")
 		config := Config{
 			Endpoint: d.Get("endpoint").(string),
@@ -66,7 +65,7 @@ func providerConfigure(p *schema.Provider) schema.ConfigureContextFunc {
 			UserUUID: d.Get("user_uuid").(string),
 		}
 		log.Print("providerConfigure:end")
-=======
+
 		log.Print("providerConfigure: start")
 		config := Config{
 			Endpoint: d.Get("endpoint").(string),
@@ -74,12 +73,12 @@ func providerConfigure(p *schema.Provider) schema.ConfigureContextFunc {
 			UserUuid: d.Get("user_uuid").(string),
 		}
 		log.Print("providerConfigure: end")
->>>>>>> main
+
 		return &config, nil
 	}
 }
 
-<<<<<<< HEAD
+
 func Resource() *schema.Resource {
 	log.Print("Resource:start")
 	return &schema.Resource{
@@ -115,12 +114,12 @@ func Resource() *schema.Resource {
 			},
 		},
 	}
-=======
+
 type Config struct {
 	Endpoint string
 	Token    string
 	UserUuid string
->>>>>>> main
+
 }
 
 func resourceHouseCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
