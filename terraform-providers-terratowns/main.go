@@ -79,7 +79,7 @@ func resourceHouseCreate(ctx context.Context, d *schema.ResourceData, m interfac
 
 	req, err := http.NewRequest("POST", config.Endpoint+"/u/"+config.UserUUID+"/homes/", byte.NewBuffer(payloadBytes))
     if err != nil {
-		ret dia.FromErr(err)
+		return diag.FromErr(err)
 	}
 
 	
@@ -92,13 +92,13 @@ func resourceHouseCreate(ctx context.Context, d *schema.ResourceData, m interfac
 	defer resp.Body.Close()
  // handling errors 
 
- f resp.StatusCode != httpStatusOK {
+ if resp.StatusCode != httpStatusOK {
 	return diag.FromErr(fmt.Errorf("Failed to create house Resource, stuatus_code : %d, status: %s body %s", resp.StatusCode, res.status, responseData))
   } 
 
  // Parse response Json
 	var responseData map[string]interface{}
-    if err:= json.NewDecoder(resp.Body).Decode(&responseData); err != {
+    if err:= json.NewDecoder(resp.Body).Decode(&responseData); err != nil {
 		return diag.FromErr(err)
 	}
 	log.Print("resourceHouseCreate:end")
@@ -126,7 +126,7 @@ func resourceHouseRead(ctx context.Context, d *schema.ResourceData, m interface{
 
 	req, err := http.NewRequest("GET", config.Endpoint+"/u/"+config.UserUUID+"/homes/+homeUUID", nil)
     if err != nil {
-		ret dia.FromErr(err)
+		return dia.FromErr(err)
 	}
 
 	
@@ -139,7 +139,7 @@ func resourceHouseRead(ctx context.Context, d *schema.ResourceData, m interface{
 
 	// Parse response Json
 	var responseData map[string]interface{}
-    if err:= json.NewDecoder(resp.Body).Decode(&responseData); err != {
+    if err:= json.NewDecoder(resp.Body).Decode(&responseData); err != nil {
 		return diag.FromErr(err)
 	}
 	log.Print("resourceHouseCreate:end")
@@ -175,7 +175,7 @@ func resourceHouseUpdate(ctx context.Context, d *schema.ResourceData, m interfac
 
 	req, err := http.NewRequest("PUT", config.Endpoint+"/u/"+config.UserUUID+"/homes/+homeUUID", nil)
     if err != nil {
-		ret dia.FromError(error)
+		return diags.FromError(error)
 	}
 
 	
@@ -216,7 +216,7 @@ func resourceHouseDelete(ctx context.Context, d *schema.ResourceData, m interfac
   // Construct a Request
 	req, err := http.NewRequest("DELETE", config.Endpoint+"/u/"+config.UserUUID+"/homes/+homeUUID", nil)
     if err != nil {
-		ret dia.FromError(error)
+		return diags.FromError(error)
 	}
     
     client := http.client{}
@@ -226,7 +226,7 @@ func resourceHouseDelete(ctx context.Context, d *schema.ResourceData, m interfac
 	}
 	defer resp.Body.Close()
 
-	else if resp.StatusCode != httpStatusOK {
+	if resp.StatusCode != httpStatusOK {
 		return diag.FromErr(fmt.Errorf("Failed to delete house Resource, stuatus_code : %d, status: %s body %s", resp.StatusCode, res.status, responseData))
 	  } 
 	
