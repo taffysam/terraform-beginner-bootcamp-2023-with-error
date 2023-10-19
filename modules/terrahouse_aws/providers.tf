@@ -5,6 +5,17 @@ required_providers {
     source = "local.providers/local/terratowns"
     version = "1.0.0"
   }
+
+    aws = {
+     source = "hashicorp/aws"
+     version = ">=5.18.1"
+     }
+
+    random = {
+      source = "hashicorp/random"
+      version = ">=3.5.1"
+    }
+  }
 }
 
 
@@ -17,19 +28,9 @@ required_providers {
 #  }
 
 
-#  required_providers {
-#   aws = {
-#     source = "hashicorp/aws"
-#     version = "5.18.1"
-#     }
 
-#    random = {
-#      source = "hashicorp/random"
-#      version = "3.5.1"
-#    }
-#  }
  
-}
+ 
 
 provider "terratowns" {
   endpoint = "http://localhost:4567"
