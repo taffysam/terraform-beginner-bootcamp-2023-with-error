@@ -1,13 +1,16 @@
 package main
 
 import (
+
 	"context"
+	"encoding/json"
+	"fmt"
+	"net/http"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
 	"github.com/google/uuid"
 	"log"
-	"encoding/json"
 )
 
 func main() {
@@ -84,11 +87,9 @@ func resourceHouseCreate(ctx context.Context, d *schema.ResourceData, m interfac
 	req, err := http.NewRequest("POST", config.Endpoint+"/u/"+config.UserUUID+"/homes/", byte.NewBuffer(payloadBytes))
     if err != nil {
 
-		return diags.FromErr(err)
-
 		return diag.FromErr(err)
 
-	}
+		}
 
 	client := http.client{}
 	resp, err := client.Do()
@@ -108,7 +109,7 @@ func resourceHouseCreate(ctx context.Context, d *schema.ResourceData, m interfac
 		return diag.FromErr(err)
 	}
 	log.Print("resourceHouseCreate:end")
-	return diags
+	return diag
 }
 
 func resourceHouseRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
@@ -132,7 +133,7 @@ func resourceHouseRead(ctx context.Context, d *schema.ResourceData, m interface{
 	req, err := http.NewRequest("GET", config.Endpoint+"/u/"+config.UserUUID+"/homes/+homeUUID", nil)
     if err != nil {
 
-		return diags.FromErr(err)
+		return diag.FromErr(err)
 
 		return diag.FromErr(err)
 
@@ -150,14 +151,14 @@ func resourceHouseRead(ctx context.Context, d *schema.ResourceData, m interface{
 	var responseData map[string]interface{}
     if err:= json.NewDecoder(resp.Body).Decode(&responseData); err != nil {
 
-		return diags.FromErr(err)
+		return diag.FromErr(err)
 
 		return diag.FromErr(err)
 
 	}
 	
 	log.Print("resourceHouseCreate:end")
-	return diags
+	return diag
 
    d.Set("name", responseData["name"].(string))
    d.Set("description", responseData["description"].(string))
@@ -210,16 +211,14 @@ func resourceHouseUpdate(ctx context.Context, d *schema.ResourceData, m interfac
 	req, err := http.NewRequest("PUT", config.Endpoint+"/u/"+config.UserUUID+"/homes/+homeUUID", nil)
     if err != nil {
 
-		return diags.FromErr(err)
-
-		return diags.FromError(error)
-
+		return diag.FromErr(err)
+       
 	}
 	
     client := http.client{}
 	resp, err := client.Do()
 	if err != nil {
-       return diags.FromErr(err)
+       return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
 
@@ -259,9 +258,7 @@ func resourceHouseDelete(ctx context.Context, d *schema.ResourceData, m interfac
 	req, err := http.NewRequest("DELETE", config.Endpoint+"/u/"+config.UserUUID+"/homes/+homeUUID", nil)
     if err != nil {
 
-		return diags.FromErr(err)
-
-		return diags.FromError(error)
+		return diag.FromErr(err)
 
 	}
     
@@ -277,7 +274,7 @@ func resourceHouseDelete(ctx context.Context, d *schema.ResourceData, m interfac
 	  } 
 	
     homeUUID := responseData["uuid"].(string)
-	return diags
+	return diag
     
 	d.Set("")
 	log.Print("resourceHouseDelete:end")
