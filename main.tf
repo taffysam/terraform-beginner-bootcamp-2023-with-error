@@ -30,7 +30,7 @@ provider "aws" {
    
 #}
 
-resource "terratown_home" "new_game" {
+resource "terratowns_home" "new_game" {
   name = "Tips to playing a Game"
   description = <<DESCRIPTION
 - Type commands to interact with the game. For example, you can type "go north," "examine the chest," or "talk to the merchant."
