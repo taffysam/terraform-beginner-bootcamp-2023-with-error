@@ -9,9 +9,9 @@ terraform {
 }
 
 provider "terratowns" {
- endpoint = "http://localhost:4567"
-  user_uuid = "e328f4ab-b99f-421c-84c9-4ccea042c7d1" 
-  token = "9b49b3fb-b8e9-483c-b703-97ba88eef8e0"
+ endpoint = "https:terratowns.cloud/api"
+  user_uuid = "87e8fc20-5f21-4b38-872b-ab8adfb49ed5" 
+  token = "09c61961-c2b3-4459-a89b-0fbe2b3c48f0"
 }
 
 
