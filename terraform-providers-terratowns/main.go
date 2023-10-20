@@ -183,56 +183,56 @@ var responseData map[string]interface{}
 }
 
 func resourceHouseUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-	log.Print("resourceHouseUpdate:start")
-	// Implement the resource update logic here
-	var diag diag.Diagnostics
+    log.Print("resourceHouseUpdate: start")
 
-	config := m.(*Config)
+    // Initialize an empty diagnostics slice
+    var diags diag.Diagnostics
 
-         
-	payload := map[string]interface{}{
-		"name": d.GET("name").string,
-		"description": d.GET("description").string,
-		"content_version": d.GET("content_version").string,
-	}
+    // Assert the configuration
+    config := m.(*Config)
 
-	payloadBytes ,err := json.Marshal(payload)
-	if err!= nil{
-		return diag.FromErr(err)
-	}
+    // Create a payload for the update request
+    payload := map[string]interface{}{
+        "name":           d.Get("name").(string),
+        "description":    d.Get("description").(string),
+        "content_version": d.Get("content_version").(string),
+    }
 
-	// Construct a Request
-
-	req, err := http.NewRequest("POST", config.Endpoint+"/u/"+config.UserUUID+"/homes", bytes.NewBuffer(responseData))
+    payloadBytes, err := json.Marshal(payload)
     if err != nil {
-       return diag.FromErr(err)
-		}
+        return diag.FromErr(err)
+    }
 
-	client := http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-       return diag.FromErr(err)
-	}
-	defer resp.Body.Close()
+    // Construct an HTTP request
+    req, err := http.NewRequest("POST", config.Endpoint+"/u/"+config.UserUUID+"/homes", bytes.NewBuffer(payloadBytes))
+    if err != nil {
+        return diag.FromErr(err)
+    }
+
+    client := &http.Client{}
+    resp, err := client.Do(req)
+    if err != nil {
+        return diag.FromErr(err)
+    }
+    defer resp.Body.Close()
 
     // Set Headers
-   req.Header.Set("Authorisation", "Bearer "+config.Token)
-   req.Header.Set("Content-Type", "application/json")
-   req.Header.Set("Accept", "application/json")
+    req.Header.Set("Authorization", "Bearer "+config.Token)
+    req.Header.Set("Content-Type", "application/json")
+    req.Header.Set("Accept", "application/json")
 
-	if resp.StatusCode != http.StatusOK {
-		return diag.FromErr(fmt.Errorf("Failed to update house Resource, stuatus_code : %d, status: %s body %s", resp.StatusCode, res.status, responseData))
-	  } 
-	
-	  log.Print("resourceHouseUpdate:end")
-      d.Set("name", payload["name"].(string))
-	  // d.Set("name",payload["name"])
-	  d.Set("desription", payload["desription"].(string))
-	  //d.Set("desription",payload["desription"])
-	  d.Set("content_version", payload["content_version"].(int))
-	 // d.Set("content_version",payload["content_version"])
-	  
-	  return diag
+    if resp.StatusCode != http.StatusOK {
+        return diag.FromErr(fmt.Errorf("Failed to update house resource, status_code: %d, status: %s", resp.StatusCode, resp.Status))
+    }
+
+    log.Print("resourceHouseUpdate: end")
+
+    // Set the updated attributes in the Terraform state
+    d.Set("name", payload["name"].(string))
+    d.Set("description", payload["description"].(string))
+    d.Set("content_version", payload["content_version"].(string))
+
+    return diags
 }
 
 func resourceHouseDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
