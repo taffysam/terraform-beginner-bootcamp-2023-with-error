@@ -83,7 +83,11 @@ func resourceHouseCreate(ctx context.Context, d *schema.ResourceData, m interfac
 
 	req, err := http.NewRequest("POST", config.Endpoint+"/u/"+config.UserUUID+"/homes/", byte.NewBuffer(payloadBytes))
     if err != nil {
+
 		return diags.FromErr(err)
+
+		return diag.FromErr(err)
+
 	}
 
 	client := http.client{}
@@ -127,7 +131,11 @@ func resourceHouseRead(ctx context.Context, d *schema.ResourceData, m interface{
 
 	req, err := http.NewRequest("GET", config.Endpoint+"/u/"+config.UserUUID+"/homes/+homeUUID", nil)
     if err != nil {
+
 		return diags.FromErr(err)
+
+		return diag.FromErr(err)
+
 	}
 
 	
@@ -141,7 +149,11 @@ func resourceHouseRead(ctx context.Context, d *schema.ResourceData, m interface{
 	// Parse response Json
 	var responseData map[string]interface{}
     if err:= json.NewDecoder(resp.Body).Decode(&responseData); err != nil {
+
 		return diags.FromErr(err)
+
+		return diag.FromErr(err)
+
 	}
 	
 	log.Print("resourceHouseCreate:end")
@@ -197,7 +209,11 @@ func resourceHouseUpdate(ctx context.Context, d *schema.ResourceData, m interfac
 
 	req, err := http.NewRequest("PUT", config.Endpoint+"/u/"+config.UserUUID+"/homes/+homeUUID", nil)
     if err != nil {
+
 		return diags.FromErr(err)
+
+		return diags.FromError(error)
+
 	}
 	
     client := http.client{}
@@ -242,7 +258,11 @@ func resourceHouseDelete(ctx context.Context, d *schema.ResourceData, m interfac
   // Construct a Request
 	req, err := http.NewRequest("DELETE", config.Endpoint+"/u/"+config.UserUUID+"/homes/+homeUUID", nil)
     if err != nil {
+
 		return diags.FromErr(err)
+
+		return diags.FromError(error)
+
 	}
     
     client := http.client{}
