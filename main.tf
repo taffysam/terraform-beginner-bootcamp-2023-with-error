@@ -43,7 +43,7 @@ Enjoy your adventure, and may you find the treasures that await you in Adventure
 DESCRIPTION
 
   domain_name = module.terrahouse_aws.cloudfront_url
-  town = "gamers-grotto"
+  town = "missingo"
   content_version = 1
 
 

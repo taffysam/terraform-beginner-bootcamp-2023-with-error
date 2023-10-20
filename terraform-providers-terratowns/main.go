@@ -182,7 +182,7 @@ var responseData map[string]interface{}
 	return diag
 }
 
-func resourceHouseUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+func resourceHouseRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
     log.Print("resourceHouseUpdate: start")
 
     // Initialize an empty diagnostics slice
