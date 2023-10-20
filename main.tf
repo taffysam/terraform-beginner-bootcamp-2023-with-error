@@ -3,7 +3,7 @@ terraform {
   required_providers {
     terratowns = {
       source  = "local.providers/local/terratowns"
-      version = ">=1.0.0"
+      version = "=1.0.0"
     }
   }
 }
@@ -30,7 +30,7 @@ provider "aws" {
    
 #}
 
-resource "terratowns_home" "new_game" {
+resource "terratowns_home" "home" {
   name = "Tips to playing a Game"
   description = <<DESCRIPTION
 - Type commands to interact with the game. For example, you can type "go north," "examine the chest," or "talk to the merchant."
