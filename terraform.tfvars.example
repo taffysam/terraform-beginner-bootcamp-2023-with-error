@@ -1,10 +1,14 @@
+terratowns_endpoint = "https:terratowns.cloud/api"
 user_uuid   ="87e8fc20-5f21-4b38-872b-ab8adfb49ed5"
 bucket_name = "87e8fc20-5f21-4b38-872b-ab8adfb49ed5"
 index_html_filepath = /terraform-beginner-bootcamp-2023-1/modules/terrahouse_aws/public/index.html"
 error_html_filepath = /terraform-beginner-bootcamp-2023-1/modules/terrahouse_aws/public/error.html"
+assets_path="/workspace/terraform-beginner-bootcamp-2023/public/assets"
 content_version=1
 
 
 AWS_DEFAULT_REGION=Region
 AWS_SECRET_ACCESS_KEY=ExamplekeyFFF
 AWS_ACCESS_KEY_ID=ExampleKeyID
+
+
