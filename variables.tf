@@ -1,34 +1,22 @@
-variable "user_uuid" {
- type        = string
-  description = "User UUID"
+variable "teacherseat_user_uuid" {
+  description = "An example input variable with UUID validation"
+  type        = string
+  #default     = "0071972e-6023-468b-9eab-4f109beb9e81"
 
-    validation {
-       condition     = can(regex("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", var.user_uuid))
-       error_message  = "user_uuid must be in the format of a UUID (e.g., 123e4567-e89b-12d3-a456-426614174000)"
-
+  validation {
+    condition     = can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", var.teacherseat_user_uuid))
+    error_message = "example_uuid must be a valid UUID. /modules/terrahouse_aws/variables.tf"
+  }
 }
 
+variable "terratowns_access_token" {
+  type        = string
+ 
 }
 
-#variable "index_html_file_path" {
-#  description = "Path to the index.html file"
-#  type        = string
-
-#  validation {
-#    condition     = can(fileexists(var.index_html_file_path))
-#    error_message = "The specified index.html file path does not exist."
-#  }
-#}
-
-#variable "error_html_file_path" {
-#  description = "Path to the index.html file"
-#  type        = string
-
-#  validation {
-#    condition     = can(fileexists(var.error_file_path))
-#    error_message = "The specified index.html file path does not exist."
-#  }
-#}
+variable "terratowns_endpoint" {
+  type        = string
+ }
 
 variable "error_html_file_path" {
   description = "Path to the index.html file"
@@ -71,7 +59,17 @@ variable "context_version" {
  
 }
 
+#variable "user_uuid" {
+# type        = string
+#  description = "User UUID"
 
+#    validation {
+#       condition     = can(regex("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", var.user_uuid))
+#       error_message  = "user_uuid must be in the format of a UUID (e.g., 123e4567-e89b-12d3-a456-426614174000)"
+
+#}
+
+#}
 
 
 

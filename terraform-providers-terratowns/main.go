@@ -1,327 +1,334 @@
+// package main: Declares the package name. 
+// The main package is special in Go, it's where the execution of the program starts.
 package main
 
+// fmt is short format, it contains functions for formatted I/O.
 import (
-
+	"bytes"
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
+	"log"
+	"fmt"
+	"github.com/google/uuid"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/diag"
 	"github.com/hashicorp/terraform-plugin-sdk/v2/helper/schema"
-	"bytes"
+	"github.com/hashicorp/terraform-plugin-sdk/v2/plugin"
 )
-
+// func main(): Defines the main function, the entry point of the app. 
+// When you run the program, it starts executing from this function.
 func main() {
 	plugin.Serve(&plugin.ServeOpts{
 		ProviderFunc: Provider,
 	})
+	// Format.PrintLine
+	// Prints to standard output
+	fmt.Println("Hello, world!")
 }
 
 type Config struct {
 	Endpoint string
-	UserUUID string
-	Token    string
+	Token string
+	UserUuid string
 }
 
+// in golang, a titlecase function will get exported.
 func Provider() *schema.Provider {
-	return &schema.Provider{
-		Schema: map[string]*schema.Schema{
-			"endpoint": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "The endpoint of an external service",
-			},
-			"token": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Sensitive:   true,
-				Description: "The bearer Token for authorization",
-			},
-			"user_uuid": {
-				Type:        schema.TypeString,
-				Required:    true,
-				ValidateFunc: ValidateUUID,
-				Description: "UUID for configuration",
-			},
-		},
-		ResourcesMap: map[string]*schema.Resource{
+	var p *schema.Provider
+	p = &schema.Provider{
+		ResourcesMap:  map[string]*schema.Resource{
 			"terratowns_home": Resource(),
 		},
+		DataSourcesMap:  map[string]*schema.Resource{
+
+		},
+		Schema: map[string]*schema.Schema{
+			"endpoint": {
+				Type: schema.TypeString,
+				Required: true,
+				Description: "The endpoint for hte external service",
+			},
+			"token": {
+				Type: schema.TypeString,
+				Sensitive: true, // make the token as sensitive to hide it the logs
+				Required: true,
+				Description: "Bearer token for authorization",
+			},
+			"user_uuid": {
+				Type: schema.TypeString,
+				Required: true,
+				Description: "UUID for configuration",
+				ValidateFunc: validateUUID,
+			},
+		},
 	}
+	p.ConfigureContextFunc = providerConfigure(p)
+	return p
+}
+
+func validateUUID(v interface{}, k string) (ws []string, errors []error) {
+	log.Print("validateUUID:start")
+	value := v.(string)
+	if _, err := uuid.Parse(value); err != nil {
+		errors = append(errors, fmt.Errorf("invalid UUID format"))
+	}
+	log.Print("validateUUID:end")
+	return
+}
+
+func providerConfigure(p *schema.Provider) schema.ConfigureContextFunc {
+	return func(ctx context.Context, d *schema.ResourceData) (interface{}, diag.Diagnostics ) {
+		log.Print("providerConfigure:start")
+		config := Config{
+			Endpoint: d.Get("endpoint").(string),
+			Token: d.Get("token").(string),
+			UserUuid: d.Get("user_uuid").(string),
+		}
+		log.Print("providerConfigure:end")
+		return &config, nil
+	}
+}
+
+func Resource() *schema.Resource {
+	log.Print("Resource:start")
+	resource := &schema.Resource{
+		CreateContext: resourceHouseCreate,
+		ReadContext: resourceHouseRead,
+		UpdateContext: resourceHouseUpdate,
+		DeleteContext: resourceHouseDelete,
+		Schema: map[string]*schema.Schema{
+			"name": {
+				Type: schema.TypeString,
+				Required: true,
+				Description: "Name of home",
+			},
+			"description": {
+				Type: schema.TypeString,
+				Required: true,
+				Description: "Description of home",
+			},
+			"domain_name": {
+				Type: schema.TypeString,
+				Required: true,
+				Description: "Domain name of home eg. *.cloudfront.net",
+			},
+			"town": {
+				Type: schema.TypeString,
+				Required: true,
+				Description: "The town to which the home will belong to",
+			},
+			"content_version": {
+				Type: schema.TypeInt,
+				Required: true,
+				Description: "The content version of the home",
+			},
+		},
+	}
+	log.Print("Resource:start")
+	return resource
 }
 
 func resourceHouseCreate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	log.Print("resourceHouseCreate:start")
-	// Implement the resource creation logic here
-	var diag diag.Diagnostics
-	// Perform resource creation and populate diag accordingly
+	var diags diag.Diagnostics
 
 	config := m.(*Config)
 
-    payload := map[string]interface{}{
-		"name":           d.Get("name").(string),
-		"description":    d.Get("description").(string),
-		"domain_name":    d.Get("domain_name").(string),
-		"town":           d.Get("town").(string),
+	payload := map[string]interface{}{
+		"name": d.Get("name").(string),
+		"description": d.Get("description").(string),
+		"domain_name": d.Get("domain_name").(string),
+		"town": d.Get("town").(string),
 		"content_version": d.Get("content_version").(int),
 	}
-
-	payloadBytes ,err := json.Marshal(payload)
-	if err!= nil{
-		return diag.FromError(err)
+	payloadBytes, err := json.Marshal(payload)
+	if err != nil {
+		return diag.FromErr(err)
 	}
 
-	homeUUID := responseData["uuid"].(string)
-	d.SetId(homeUUID)
+	url :=  config.Endpoint+"/u/"+config.UserUuid+"/homes"
+	log.Print("URL: "+ url)
+	// Construct the HTTP Request
+	req, err := http.NewRequest("POST", url, bytes.NewBuffer(payloadBytes))
+	if err != nil {
+		return diag.FromErr(err)
+	}
 
-	// Construct a Request
-	req, err := http.NewRequest("POST", config.Endpoint+"/u/"+config.UserUUID+"/homes", bytes.NewBuffer(payloadBytes))
-    if err != nil {
-       return diag.FromErr(err)
-
-		}
+	// Set Headers
+	req.Header.Set("Authorization", "Bearer "+config.Token)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
 
 	client := http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-       return diag.FromErr(err)
-	}
-	defer resp.Body.Close()
- // handling errors 
-
- // Set Headers
-
-     req.Header.Set("Authorization", "Bearer "+config.Token)
-     req.Header.Set("Content-Type", "application/json")
-     req.Header.Set("Accept", "application/json")
-
- var responseData map[string]interface{}
-
- if resp.StatusCode != http.StatusOK {
-	return diag.FromErr(fmt.Errorf("Failed to create house Resource, status_code: %d, status: %s, body: %s", resp.StatusCode, resp.Status, responseData))
-}
-
- // Parse response Json
-
-  if err:= json.NewDecoder(resp.Body).Decode(&responseData); err != nil {
 		return diag.FromErr(err)
 	}
-   log.Print("resourceHouseCreate:end")
-	return diag
+	defer resp.Body.Close()
+
+	// parse response JSON
+	var responseData map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&responseData);  err != nil {
+		return diag.FromErr(err)
+	}
+
+	// StatusOK = 200 HTTP Response Code
+	if resp.StatusCode != http.StatusOK {
+		return diag.FromErr(fmt.Errorf("failed to create home resource, status_code: %d, status: %s, body %s", resp.StatusCode, resp.Status, responseData))
+	}
+
+	// handle response status
+
+	homeUUID := responseData["uuid"].(string)
+	d.SetId(homeUUID)
+
+	log.Print("resourceHouseCreate:end")
+
+	return diags
 }
 
 func resourceHouseRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	log.Print("resourceHouseRead:start")
-	// Implement the resource read logic here
-	var diag diag.Diagnostics
-	// Perform resource read and populate diag accordingly
+	var diags diag.Diagnostics
 
 	config := m.(*Config)
-    
-	// homeUUID := d.Id()
-  
-	// Construct a Request
-req, err := http.NewRequest("POST", config.Endpoint+"/u/"+config.UserUUID+"/homes", bytes.NewBuffer(payloadBytes))
-if err != nil {
-    if err != nil {
-       return diag.FromErr(err)
-		}
+
+	homeUUID := d.Id()
+
+	// Construct the HTTP Request
+	url := config.Endpoint+"/u/"+config.UserUuid+"/homes/"+homeUUID
+	log.Print("URL: "+ url)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+
+	// Set Headers
+	req.Header.Set("Authorization", "Bearer "+config.Token)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
 
 	client := http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-       return diag.FromErr(err)
+		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
 
-	// handling errors 
+	var responseData map[string]interface{}
 
- if resp.StatusCode != http.StatusOK {
-	return diag.FromErr(fmt.Errorf("Failed to create house Resource, status_code: %d, status: %s, body: %s", resp.StatusCode, resp.Status, responseData))
-}
-// Parse response Json
-var responseData map[string]interface{}
-    if err:= json.NewDecoder(resp.Body).Decode(&responseData); err != nil {
-
-		return diag.FromErr(err)
-
+	if resp.StatusCode == http.StatusOK {
+		// parse response JSON
+		if err := json.NewDecoder(resp.Body).Decode(&responseData);  err != nil {
+			return diag.FromErr(err)
 		}
-	
-  
-	homeUUID := responseData["uuid"].(string)
-	d.SetId(homeUUID)
-	
-
-	log.Print("resourceHouseCreate:end")
-	return diag
-
-		// Set Headers
-		req.Header.Set("Authorization", "Bearer "+config.Token)
-		req.Header.Set("Content-Type", "application/json")
-		req.Header.Set("Accept", "application/json")
-	
-
- payload := map[string]interface{}{
-   d.Set("name", responseData["name"].(string)),
-   d.Set("description", responseData["description"].(string)),
-   d.Set("domain_name", responseData["domain_name"].(string)),
-   d.Set("content_version", responseData["content_version"].(int)),
-   //d.Set("town", responseData["town"].(string))
- }
-   if resp.StatusCode!= http.StatusNotFound {
-	d.Set("")
-   }
-
-   if resp.StatusCode != http.StatusOK {
-     return diag.FromErr(fmt.Errorf("Failed to read house Resource, stuatus_code : %d, status: %s body %s", resp.StatusCode, resp.Status, responseData))
-   }   
-
-    // Handle response status
+		d.Set("name",responseData["name"].(string))
+		d.Set("description",responseData["description"].(string))
+		d.Set("domain_name",responseData["domain_name"].(string))
+		d.Set("content_version",responseData["content_version"].(float64))
+	} else if resp.StatusCode == http.StatusNotFound {
+		d.SetId("")
+	} else if resp.StatusCode != http.StatusOK {
+		return diag.FromErr(fmt.Errorf("failed to read home resource, status_code: %d, status: %s, body %s", resp.StatusCode, resp.Status, responseData))
+	}
 
 	log.Print("resourceHouseRead:end")
-	return diag
+
+	return diags
 }
 
-func resourceHouseRead(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
-    log.Print("resourceHouseUpdate: start")
+func resourceHouseUpdate(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
+	log.Print("resourceHouseUpdate:start")
+	var diags diag.Diagnostics
 
-    // Initialize an empty diagnostics slice
-    var diags diag.Diagnostics
+	config := m.(*Config)
 
-    // Assert the configuration
-    config := m.(*Config)
+	homeUUID := d.Id()
 
-    // Create a payload for the update request
-    payload := map[string]interface{}{
-        "name":           d.Get("name").(string),
-        "description":    d.Get("description").(string),
-        "content_version": d.Get("content_version").(string),
-    }
+	payload := map[string]interface{}{
+		"name": d.Get("name").(string),
+		"description": d.Get("description").(string),
+		"content_version": d.Get("content_version").(int),
+	}
+	payloadBytes, err := json.Marshal(payload)
+	if err != nil {
+		return diag.FromErr(err)
+	}
 
-    payloadBytes, err := json.Marshal(payload)
-    if err != nil {
-        return diag.FromErr(err)
-    }
+	// Construct the HTTP Request
+	url := config.Endpoint+"/u/"+config.UserUuid+"/homes/"+homeUUID
+	log.Print("URL: "+ url)
+	req, err := http.NewRequest("PUT", url, bytes.NewBuffer(payloadBytes))
+	if err != nil {
+		return diag.FromErr(err)
+	}
 
-    // Construct an HTTP request
-    req, err := http.NewRequest("POST", config.Endpoint+"/u/"+config.UserUUID+"/homes", bytes.NewBuffer(payloadBytes))
-    if err != nil {
-        return diag.FromErr(err)
-    }
+	// Set Headers
+	req.Header.Set("Authorization", "Bearer "+config.Token)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
 
-    client := &http.Client{}
-    resp, err := client.Do(req)
-    if err != nil {
-        return diag.FromErr(err)
-    }
-    defer resp.Body.Close()
+	client := http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		return diag.FromErr(err)
+	}
+	defer resp.Body.Close()
 
-    // Set Headers
-    req.Header.Set("Authorization", "Bearer "+config.Token)
-    req.Header.Set("Content-Type", "application/json")
-    req.Header.Set("Accept", "application/json")
+	// parse response JSON
+	var responseData map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&responseData);  err != nil {
+		return diag.FromErr(err)
+	}
 
-    if resp.StatusCode != http.StatusOK {
-        return diag.FromErr(fmt.Errorf("Failed to update house resource, status_code: %d, status: %s", resp.StatusCode, resp.Status))
-    }
+	// StatusOK = 200 HTTP Response Code
+	if resp.StatusCode != http.StatusOK {
+		return diag.FromErr(fmt.Errorf("failed to update home resource, status_code: %d, status: %s, body %s", resp.StatusCode, resp.Status, responseData))
+	}
 
-    log.Print("resourceHouseUpdate: end")
+	log.Print("resourceHouseUpdate:end")
 
-    // Set the updated attributes in the Terraform state
-    d.Set("name", payload["name"].(string))
-    d.Set("description", payload["description"].(string))
-    d.Set("content_version", payload["content_version"].(string))
-
-    return diags
+	d.Set("name",payload["name"])
+	d.Set("description",payload["description"])
+	d.Set("content_version",payload["content_version"])
+	return diags
 }
 
 func resourceHouseDelete(ctx context.Context, d *schema.ResourceData, m interface{}) diag.Diagnostics {
 	log.Print("resourceHouseDelete:start")
-	// Implement the resource deletion logic here
-	var diag diag.Diagnostics
-	// Perform resource deletion and populate diag accordingly
+	var diags diag.Diagnostics
 
 	config := m.(*Config)
 
-	homeUUID := responseData["uuid"].(string)
-	d.SetId(homeUUID)
-  	   
+	homeUUID := d.Id()
 
-    
-
-  // Construct a Request
-	req, err := http.NewRequest("DELETE", config.Endpoint+"/u/"+config.UserUUID+"/homes/+homeUUID", nil)
-    if err != nil {
-
+	// Construct the HTTP Request
+	url :=  config.Endpoint+"/u/"+config.UserUuid+"/homes/"+homeUUID
+	log.Print("URL: "+ url)
+	req, err := http.NewRequest("DELETE", url , nil)
+	if err != nil {
 		return diag.FromErr(err)
 	}
-    
-      // Set Headers
 
-      req.Header.Set("Authorisation", "Bearer "+config.Token)
-      req.Header.Set("Content-Type", "application/json")
-      req.Header.Set("Accept", "application/json")
+	// Set Headers
+	req.Header.Set("Authorization", "Bearer "+config.Token)
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Accept", "application/json")
 
-    client := http.Client{}
+	client := http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-       return diag.FromErr(err)
+		return diag.FromErr(err)
 	}
 	defer resp.Body.Close()
 
+	// StatusOK = 200 HTTP Response Code
 	if resp.StatusCode != http.StatusOK {
-		return diag.FromErr(fmt.Errorf("Failed to delete house Resource, stuatus_code : %d, status: %s body %s", resp.StatusCode, resp.Status, responseData))
-	  } 
-	  
-	
+		return diag.FromErr(fmt.Errorf("failed to delete home resource, status_code: %d, status: %s", resp.StatusCode, resp.Status))
+	}
+
 	d.SetId("")
+
 	log.Print("resourceHouseDelete:end")
-	
-	return diag
-}
-
-func ValidateUUID(i interface{}, k string) (ws []string, errors []error) {
-	value, ok := i.(string)
-	if !ok {
-		return []string{"Invalid data type for UUID"}, []error{nil}
-	}
-
-	_, err := uuid.Parse(value)
-	if err != nil {
-		return []string{err.Error()}, []error{err}
-	}
-
-	return nil, nil
-}
-
-func Resource() *schema.Resource {
-	return &schema.Resource{
-		Schema: map[string]*schema.Schema{
-			"name": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "Name of Home",
-			},
-			"description": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "Home Description",
-			},
-			"domain_name": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "Home Domain Name",
-			},
-			"town": {
-				Type:        schema.TypeString,
-				Required:    true,
-				Description: "Town to which the home will belong",
-			},
-			"content_version": {
-				Type:        schema.TypeInt,
-				Required:    true,
-				Description: "Content Version",
-			},
-		},
-	}
+	return diags
 }
