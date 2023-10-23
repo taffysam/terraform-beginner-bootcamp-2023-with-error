@@ -16,15 +16,15 @@ output "index_html_file_path_output" {
 }
 
 
-#output "s3_website_endpoint" {
-#  description = "The S3 Static Website hosting endpoint" 
-#  value = module.terrahouse_aws.website_endpoint
-#}
+output "s3_website_endpoint" {
+  description = "The S3 Static Website hosting endpoint" 
+  value = module.terrahouse_aws.website_endpoint
+}
 
-#output "cloudfront_url" {
-#  description = "The CLoudFront Distribution Domain Name" 
-#  value = module.terrahouse_aws.cloudfront_url
-#}
+output "cloudfront_url" {
+  description = "The CLoudFront Distribution Domain Name" 
+  value = module.terrahouse_aws.cloudfront_url
+}
 
 #output "s3_website_endpoint" {
 #  value = module.terrahouse_aws.website_endpoint
