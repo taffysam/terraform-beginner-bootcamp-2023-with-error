@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     terratowns = {
-      source = "local-providers-local-terratowns"
+      source = "local.providers-local-terratowns"
       version = "1.0.0"
     }
   }
@@ -62,7 +62,7 @@ DESCRIPTION
 }
 
 
-module "terrahouse_aws" {
+module "home" {
 source = "./modules/terrahouse_aws"
 user_uuid = var.teacherseat_user_uuid
 bucket_name = var.bucket_name
@@ -73,10 +73,7 @@ context_version  = var.context_version
    
 }
 
-
-
-
-resource "terratowns_home" "home" {
+resource "terratowns_home" "hide" {
   name = "How to play Hide and Seek"
   description = <<DESCRIPTION
 Hide and seek is a classic outdoor game that is popular among children and is also enjoyed by people of all ages. Here are the basic rules and steps to play hide and seek:
