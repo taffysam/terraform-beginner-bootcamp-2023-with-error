@@ -53,24 +53,27 @@ variable "bucket_name" {
 }
 
 
-variable "context_version" {
+variable "content_version" {
   type        = number
   description = "The context version (positive integer starting at 1)"
  
 }
-
-#variable "user_uuid" {
-# type        = string
-#  description = "User UUID"
-
-#    validation {
-#       condition     = can(regex("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$", var.user_uuid))
-#       error_message  = "user_uuid must be in the format of a UUID (e.g., 123e4567-e89b-12d3-a456-426614174000)"
-
-#}
-
-#}
+variable "public_path" {
+  description = "The file path for the public directory"
+  type        = string
+}
 
 
+variable "compass" {
+  type = object({
+    public_path = string
+    content_version = number
+  })
+}
 
-
+variable "hide" {
+  type = object({
+    public_path = string
+    content_version = number
+  })
+}
