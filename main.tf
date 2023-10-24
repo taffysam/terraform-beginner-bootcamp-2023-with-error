@@ -61,7 +61,7 @@ Enjoy your adventure, and may you find the treasures that await you in Adventure
 DESCRIPTION
   domain_name = module.home_compass.domain_name
   town = "missingo"
-  content_version = var.home_compass_compass.content_version
+  content_version = var.home_compass.content_version
 }
 
 
