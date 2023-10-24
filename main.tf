@@ -1,7 +1,7 @@
 terraform {
   required_providers {
     terratowns = {
-      source = "local.providers/local/terratowns"
+      source = "local-providers-local-terratowns"
       version = "1.0.0"
     }
   }
@@ -47,7 +47,7 @@ context_version  = var.context_version
    
 }
 
-resource "terratowns_home" "home" {
+resource "terratowns_home" "compass" {
   name = "Ho to play Compass Game"
   description = <<DESCRIPTION
 - Type commands to interact with the game. For example, you can type "go north," "examine the chest," or "talk to the merchant."
