@@ -4,7 +4,8 @@ terraform {
       source = "local.providers/local/terratowns"
       version = ">=1.0.0"
     }
-  }
+ }
+
    cloud {
     organization = "Tafadzwa"
     workspaces {
