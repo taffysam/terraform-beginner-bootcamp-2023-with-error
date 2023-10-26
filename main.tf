@@ -1,18 +1,19 @@
 terraform {
   required_providers {
-    terratowns ={
-      source = "local.providers/local/terratowns"
-      version = ">=1.0.0"
+    terratowns = {
+      source  = "local.providers/local/terratowns"
+      version = "1.0.0"
     }
- }
+  }
+}
 
-   cloud {
-    organization = "Tafadzwa"
-    workspaces {
-      name = "terrahouse-2"
-}
-}
-}
+#  cloud {
+#   organization = "Tafadzwa"
+#   workspaces {
+#     name = "terrahouse-2"
+#}
+#}
+#}
 
 provider "terratowns" {
   endpoint  = var.terratowns_endpoint
