@@ -16,7 +16,7 @@ resource "aws_s3_bucket" "website_bucket" {
   }
 }
 
-data "aws_caller_identity" "current" {}
+#data "aws_caller_identity" "current" {}
 
 #resource "aws_s3_bucket" "bootcamp2" {
 #  bucket = "22e8fc20-5f21-4b38-872b-ab8adfb49ed5"

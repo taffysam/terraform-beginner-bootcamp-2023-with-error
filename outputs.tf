@@ -1,12 +1,3 @@
- #value = random_string.bucket_name.id
-  
-#}
-
-#output "random_bucket_name" {
- # value = random_string.bucket_name.result
-  
-#}
-
 output "error_html_file_path_output" {
   value = var.error_html_file_path
 }
@@ -26,6 +17,21 @@ output "cloudfront_url" {
   value = module.terrahouse_aws.cloudfront_url
 }
 
-#output "s3_website_endpoint" {
-#  value = module.terrahouse_aws.website_endpoint
-#}
+output "s3_bucket_name" {
+  description = "Value that is unique."
+  value       = aws_s3_bucket.example.id
+}
+
+output "UUID" {
+  description = "Value that is unique."
+  value       = var.teacherseat_user_uuid
+}
+
+output "s3bucket_website" {
+  description = "the value of the website/url that is produced for the s3 bucket."
+  value       = aws_s3_bucket_website_configuration.s3website.website_endpoint
+}
+
+output "domain_name" {
+  value = aws_cloudfront_distribution.s3_distribution.domain_name
+}

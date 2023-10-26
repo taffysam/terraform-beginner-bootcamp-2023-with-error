@@ -1,27 +1,18 @@
-#!/bin/bash
+#! /usr/bin/bash
 
-# Define variables
-PROJECT_ROOT="/workspace/terraform-beginner-bootcamp-2023"
-PLUGIN_DIR="/home/gitpod/.terraform.d/plugins/local.provider/local/terratowns/1.0.0/"
+PLUGIN_DIR="/home/gitpod/.terraform.d/plugins/local.providers/local/terratowns/1.0.0/"
 PLUGIN_NAME="terraform-provider-terratowns_v1.0.0"
+PROJECT_ROOT="gitpod /workspace/terraform-beginner-bootcamp-2023"
 
-# Change directory to your project
-cd "$PROJECT_ROOT/terraform-providers-terratowns"
-
-# Copy your custom terraformrc file
-cp "$PROJECT_ROOT/terraformrc" "/home/gitpod/.terraformrc"
-
-# Clean up previously installed plugins and cache
-rm -rf "/home/gitpod/.terraform.d/plugins"
-rm -rf "/home/gitpod/.terraform"
-
-# Build your custom Terraform provider
-go build -o "$PLUGIN_NAME"
-
-# Create the plugin directory structure
-mkdir -p "$PLUGIN_DIR/x86_64"
-mkdir -p "$PLUGIN_DIR/1.0.0/linux_amd64"
-
-# Copy the compiled Terraform provider binary to the plugin directory
-cp "$PLUGIN_NAME" "$PLUGIN_DIR/x86_64"
-cp "$PLUGIN_NAME" "$PLUGIN_DIR/1.0.0/linux_amd64"
+# https://servian.dev/terraform-local-providers-and-registry-mirror-configuration-b963117dfffa
+cd $PROJECT_ROOT
+cd terraform-provider-terratowns
+cp $PROJECT_ROOT/terraformrc /home/gitpod/.terraformrc
+rm -rf /home/gitpod/.terraform.d/plugins
+rm -rf $PROJECT_ROOT/.terraform
+rm -rf $PROJECT_ROOT/.terraform.lock.hcl
+go build -o $PLUGIN_NAME
+mkdir -p $PLUGIN_DIR/x86_64/
+mkdir -p $PLUGIN_DIR/linux_amd64/
+cp $PLUGIN_NAME $PLUGIN_DIR/x86_64
+cp $PLUGIN_NAME $PLUGIN_DIR/linux_amd64
