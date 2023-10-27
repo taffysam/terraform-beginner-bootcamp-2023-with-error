@@ -9,6 +9,9 @@ tasks:
       source ./bin/generate_trfc_credentials
       source ./bin/build_provider
       cp $PROJECT_ROOT/terraform.tfvars.example $PROJECT_ROOT/terraform.tfvars
+      
+      cd ../
+
 
   - name: sinatra
     before : |
