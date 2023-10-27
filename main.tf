@@ -49,9 +49,6 @@ public_path = var.public_path
    
 }
 
-
-
-
 resource "terrahome_aws" "compass" {
 name = "How to play Compass Game"
   description = <<DESCRIPTION
@@ -66,8 +63,6 @@ DESCRIPTION
   content_version = var.home_compass.content_version
 }
 
-
-
 module "home_compass" {
 source = "./modules/terrahome_aws"
 user_uuid = var.teacherseat_user_uuid
@@ -80,8 +75,7 @@ context_version = var.content_version
 }
 
 
-
-resource "terrahome_aws" "hide"{
+resource "terrahome_game" "hide"{
   name = "How to play Hide and Seek"
   description = <<DESCRIPTION
 Hide and seek is a classic outdoor game that is popular among children and is also enjoyed by people of all ages. Here are the basic rules and steps to play hide and seek:
@@ -122,9 +116,5 @@ error_html_file_path = var.error_html_file_path
 context_version  = var.content_version
 public_path = var.hide.public_path  
 }
-
-
-
-
 
 
